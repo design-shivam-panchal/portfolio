@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shivam Panchal - Creative Portfolio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- THEME COLORS (CSS VARIABLES) --- */
+        :root {
+            --bg-color: #0b0a10;
+            --text-color-primary: #f0f0f0;
+            --text-color-secondary: #9ca3af;
+            --section-bg: rgba(17, 15, 23, 0.7);
+            --card-bg: rgba(30, 27, 42, 0.8);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #a78bfa;
+            --nav-bg: rgba(11, 10, 16, 0.5);
+            --blob-color-1: #a855f7;
+            --blob-color-2: #3b82f6;
+            --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        body.light-theme {
+            --bg-color: #d2d3db;
+            --text-color-primary: #18181b;
+            --text-color-secondary: #52525b;
+            --section-bg: rgba(255, 255, 255, 0.7);
+            --card-bg: #ffffff;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --accent-color: #8b5cf6;
+            --nav-bg: rgba(210, 211, 219, 0.7);
+            --blob-color-1: #c084fc;
+            --blob-color-2: #93c5fd;
+            --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-shadow: 0 8px 32px 0 rgba(100, 100, 100, 0.2);
+        }
+        
+        /* --- General Setup --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color-primary);
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+        
+        /* --- Animated Bubble Background --- */
+        .background-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .blob-container {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            filter: blur(80px);
+            opacity: 0.5;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            transition: background-color 0.4s ease;
+            animation: move 25s infinite alternate;
+        }
+
+        .blob:nth-child(1) { width: 40vw; height: 40vw; max-width: 400px; max-height: 400px; background-color: var(--blob-color-1); top: 5%; left: 5%; animation-duration: 20s; }
+        .blob:nth-child(2) { width: 30vw; height: 30vw; max-width: 300px; max-height: 300px; background-color: var(--blob-color-2); bottom: 5%; right: 5%; animation-duration: 25s; animation-delay: -5s; }
+        .blob:nth-child(3) { width: 25vw; height: 25vw; max-width: 250px; max-height: 250px; background-color: var(--accent-color); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-duration: 30s; }
+
+        @keyframes move {
+            from { transform: translate(0, 0) scale(1) rotate(0deg); }
+            to { transform: translate(20vw, -30vh) scale(1.2) rotate(180deg); }
+        }
+        
+        /* --- Navigation Bar --- */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 999;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid transparent;
+            transition: background-color 0.4s ease, border-bottom 0.4s ease;
+        }
+        .navbar.scrolled { background-color: var(--nav-bg); border-bottom: 1px solid var(--border-color); }
+        .nav-logo, .nav-links a, .theme-switcher { transition: color 0.4s ease; }
+        .nav-logo { font-weight: 700; font-size: 1.5rem; color: var(--text-color-primary); text-decoration: none; }
+        .nav-links { display: flex; list-style: none; gap: 35px; }
+        .nav-links a { color: var(--text-color-secondary); text-decoration: none; font-size: 1rem; }
+        .nav-links a:hover { color: var(--accent-color); }
+        .nav-right-group { display: flex; align-items: center; gap: 20px; }
+        .theme-switcher { background: none; border: none; color: var(--text-color-secondary); cursor: pointer; font-size: 1.5rem; }
+        .hamburger-menu { display: none; }
+
+        /* --- Cursor Glow Effect --- */
+        .cursor-glow {
+            position: fixed;
+            left: 0; top: 0;
+            pointer-events: none;
+            width: 40px; height: 40px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            transition: transform 0.1s ease-out;
+            z-index: 1001;
+        }
+
+        /* --- Hero Section --- */
+        .hero-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        .hero-content .intro-text { font-size: 1.5rem; color: var(--text-color-secondary); margin-bottom: 8px; }
+        .hero-content h1 { font-size: 5.5rem; font-weight: 700; letter-spacing: -2px; cursor: pointer; line-height: 1.1; }
+        
+        /* === NEW ANIMATION FOR THE NAME === */
+        @keyframes fadeInUpName {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animated-name {
+            animation: fadeInUpName 1.2s ease-out 0.3s; /* 0.3s delay */
+            animation-fill-mode: forwards;
+            /* Start with the element hidden before animation */
+            opacity: 0; 
+        }
+        /* === END OF NEW ANIMATION === */
+        
+        /* Liquid Glass Skill Box Styles */
+        .hero-skills-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        .hero-skill-box {
+            padding: 12px 25px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            color: var(--text-color-secondary);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease, background-color 0.4s, border-color 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-content.loaded .hero-skill-box {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .hero-content.loaded .hero-skill-box:nth-child(1) { transition-delay: 0.6s; }
+        .hero-content.loaded .hero-skill-box:nth-child(2) { transition-delay: 0.8s; }
+        .hero-content.loaded .hero-skill-box:nth-child(3) { transition-delay: 1.0s; }
+        
+        /* Liquid Glass Sheen Effect on Hover */
+        .hero-skill-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .hero-skill-box:hover::after {
+            left: 150%;
+        }
+        
+        /* --- Sparkle Effect --- */
+        .sparkle { position: fixed; pointer-events: none; width: 6px; height: 6px; background-color: var(--accent-color); border-radius: 50%; z-index: 1002; opacity: 0.8; animation: sparkle-anim 1.5s ease-out forwards; }
+        @keyframes sparkle-anim { 0% { transform: scale(1.2) translate(0, 0); opacity: 1; } 100% { transform: scale(0) translate(var(--x), var(--y)); opacity: 0; } }
+
+        /* --- General Section Styling --- */
+        .content-section {
+            padding: 100px 40px;
+            background-color: var(--section-bg);
+            border: 1px solid var(--border-color);
+            margin: 0 20px 40px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+            position: relative;
+            z-index: 2;
+        }
+        .section-container { max-width: 1100px; margin: 0 auto; }
+        .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 50px; font-weight: 700; }
+        .section-title span { color: var(--accent-color); }
+        
+        /* Other section styles... */
+        .about-content { display: flex; align-items: center; gap: 50px; }
+        .about-image { flex-shrink: 0; width: 300px; height: 300px; }
+        .about-image img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 3px solid var(--border-color); }
+        .about-text { text-align: left; }
+        .about-text p { color: var(--text-color-secondary); line-height: 1.8; font-size: 1.1rem; margin-bottom: 20px; }
+        
+        #services .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; text-align: center; }
+        .service-card { background-color: var(--card-bg); padding: 40px 20px; border-radius: 12px; border: 1px solid var(--border-color); transition: transform 0.3s ease, background-color 0.4s ease, border-color 0.4s ease; }
+        .service-card:hover { transform: translateY(-10px); }
+        
+        #portfolio .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .portfolio-item { position: relative; height: 250px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); background-color: var(--card-bg); cursor: pointer; transition: border-color 0.4s ease, background-color 0.4s ease; }
+        .portfolio-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        .portfolio-item:hover img { transform: scale(1.1); }
+        .portfolio-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; justify-content: center; align-items: flex-end; padding: 20px; opacity: 0; transition: opacity 0.4s ease; }
+        .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+        .portfolio-overlay h3 { color: #ffffff; font-size: 1.2rem; text-align: center; transform: translateY(10px); transition: transform 0.4s ease; }
+        .portfolio-item:hover .portfolio-overlay h3 { transform: translateY(0); }
+
+        .cta-button { padding: 12px 24px; background-image: linear-gradient(to right, #6d28d9, #8b5cf6); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; text-decoration: none; display: inline-block; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .cta-button:hover { transform: scale(1.05); }
+        #contact { text-align: center; }
+        #contact p { max-width: 600px; margin: 0 auto 40px auto; color: var(--text-color-secondary); }
+        .contact-buttons { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        
+        footer { text-align: center; padding: 40px 20px; color: var(--text-color-secondary); font-size: 0.9rem; }
+        .reveal { opacity: 0; transform: translateY(50px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        
+        /* --- MOBILE RESPONSIVE STYLES --- */
+        @media (max-width: 768px) {
+            /* UPDATED: Sirf cursor hide hoga, background nahi */
+            .cursor-glow { 
+                display: none; 
+            }
+            
+            .navbar { padding: 15px 20px; }
+            .nav-logo { font-size: 1.2rem; }
+            .nav-right-group { gap: 15px; }
+            .nav-links { display: none; position: absolute; top: 100%; left: 0; width: 100%; background-color: var(--bg-color); flex-direction: column; padding: 20px 0; border-bottom: 1px solid var(--border-color); gap: 0; text-align: center; }
+            .nav-links.active { display: flex; }
+            .nav-links li { width: 100%; }
+            .nav-links a { display: block; padding: 15px; width: 100%; }
+            .hamburger-menu { display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 5px; }
+            .hamburger-menu span { width: 25px; height: 2px; background-color: var(--text-color-primary); border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease; transform-origin: center; }
+            .hamburger-menu.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+            .hamburger-menu.open span:nth-child(2) { opacity: 0; }
+            .hamburger-menu.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+            
+            .hero-content h1 { font-size: 3.5rem; line-height: 1.2; }
+            .hero-skills-container { font-size: 1rem; }
+            .content-section { margin: 0; border-radius: 0; border-left: none; border-right: none; padding: 80px 20px; border-top: 1px solid var(--border-color); }
+            #about { border-top: none; }
+            .about-content { flex-direction: column; text-align: center; }
+            .about-image { width: 200px; height: 200px; margin-bottom: 30px; }
+            .about-text { text-align: center; }
+            #services .services-grid, #portfolio .portfolio-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-wrapper">
+        <div class="blob-container">
+            <div class="blob"></div>
+            <div class="blob"></div>
+            <div class="blob"></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <a href="#" class="nav-logo">Shivam Panchal</a>
+        <div class="nav-right-group">
+            <ul class="nav-links" id="nav-links-menu">
+                <li><a href="#">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#portfolio">Work</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="theme-switcher" id="theme-switcher-btn">🌙</button>
+            <button class="hamburger-menu" id="hamburger-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+    
+    <main class="hero-section" id="home">
+        <div class="cursor-glow"></div>
+        <div class="hero-content">
+            <p class="intro-text">Hi, I'm</p>
+            <h1 class="animated-name">Shivam Panchal</h1>
+            <div class="hero-skills-container">
+                <div class="hero-skill-box">Graphic Designer</div>
+                <div class="hero-skill-box">Video Editor</div>
+                <div class="hero-skill-box">CGI Artist</div>
+            </div>
+        </div>
+    </main>
+    
+    <section id="about" class="content-section reveal">
+        <div class="section-container">
+            <h2 class="section-title">About <span>Me</span></h2>
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="svm.png" alt="Shivam Panchal">
+                </div>
+                <div class="about-text">
+                    <p>Hi, I’m a passionate Visual Creator with a sharp eye for design and detail. I specialize in Graphic Design, Video Editing, and CGI Advertising, crafting visuals that not only look good—but leave an impact.</p>
+                    <p>Whether it's designing bold and clean graphics, editing dynamic videos that tell a story, or creating high-end CGI ads that turn imagination into visuals, I bring creativity and precision to every project. With every frame and pixel, my goal is to make your brand stand out and connect with the audience.</p>
+                    <p>Let’s build something visual. Something powerful.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="content-section reveal">
+         <div class="section-container">
+            <h2 class="section-title">My <span>Services</span></h2>
+            <div class="services-grid">
+                <div class="service-card reveal">
+                    <h3>Graphic Design</h3>
+                    <p>Creating visually stunning logos, brand identities, and marketing materials.</p>
+                </div>
+                <div class="service-card reveal">
+                    <h3>Video Editing</h3>
+                    <p>Turning raw footage into a compelling story with professional editing and grading.</p>
+                </div>
+                <div class="service-card reveal">
+                    <h3>CGI Ad</h3>
+                    <p>Bringing imagination to life with high-quality computer-generated imagery.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="content-section reveal">
+        <div class="section-container">
+            <h2 class="section-title">My <span>Work</span></h2>
+            <div class="portfolio-grid">
+                <a href="https://www.youtube.com/watch?v=6CNYAHgmF8U" target="_blank" style="text-decoration: none;">
+    <div class="portfolio-item reveal">
+        <img src="thumbnail 1.png" alt="Video Project">
+        <div class="portfolio-overlay">
+            <h3>Clay Stop Motion</h3>
+        </div>
+    </div>
+</a>
+<a href="https://www.youtube.com/watch?v=VCEDkWWW_Ag" target="_blank" style="text-decoration: none;">
+    <div class="portfolio-item reveal">
+        <img src="thumbnail 2.jpg" alt="Video Project">
+        <div class="portfolio-overlay">
+            <h3>Behind The Scene</h3>
+        </div>
+    </div>
+</a>
+<a href="https://www.youtube.com/shorts/muikpEkmAI0" target="_blank" style="text-decoration: none;">
+    <div class="portfolio-item reveal">
+        <img src="thumbnail 3.png.jpg" alt="Video Project">
+        <div class="portfolio-overlay">
+            <h3>Short Reel </h3>
+        </div>
+    </div>
+</a>
+<a href="https://www.behance.net/gallery/225648541/Graphic-Design-Work" target="_blank" style="text-decoration: none;">
+    <div class="portfolio-item reveal">
+        <img src="thumbnail 4.jpg" alt="Video Project">
+        <div class="portfolio-overlay">
+            <h3>Graphic Work</h3>
+        </div>
+    </div>
+</a>
+<a href="https://www.youtube.com/shorts/bCMC4XnTgSk" target="_blank" style="text-decoration: none;">
+    <div class="portfolio-item reveal">
+        <img src="thumbnail 5.png" alt="Video Project">
+        <div class="portfolio-overlay">
+            <h3>CGI Ad</h3>
+        </div>
+    </div>
+</a><a href="https://www.youtube.com/@ShivammPanchall" target="_blank" style="text-decoration: none;">
+    <div class="portfolio-item reveal">
+        <img src="thumbnail 6.png" alt="Video Project">
+        <div class="portfolio-overlay">
+            <h3>For More Content</h3>
+        </div>
+    </div>
+</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="contact" class="content-section reveal">
+        <div class="section-container">
+            <h2 class="section-title">Get In <span>Touch</span></h2>
+            <p>I'm currently available for freelance work. If you have a project in mind or just want to say hello, feel free to reach out!</p>
+            <div class="contact-buttons">
+                <a href="mailto:svmpanchal99@gmail.com" class="cta-button">Email Me</a>
+                <a href="tel:+916378863658" class="cta-button">Call Me</a>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p>&copy; 2025 Shivam Panchal. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Force scroll to top on page load
+            if (history.scrollRestoration) {
+                history.scrollRestoration = 'manual';
+            }
+            window.scrollTo(0, 0);
+
+            // Theme Switcher
+            const themeSwitcherBtn = document.getElementById('theme-switcher-btn');
+            const body = document.body;
+            const setTheme = (theme) => {
+                body.classList.toggle('light-theme', theme === 'light');
+                themeSwitcherBtn.textContent = theme === 'light' ? '☀️' : '🌙';
+                localStorage.setItem('theme', theme);
+            };
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            setTheme(savedTheme);
+            themeSwitcherBtn.addEventListener('click', () => {
+                const currentTheme = localStorage.getItem('theme') || 'dark';
+                setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+
+            // Hamburger Menu
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const navMenu = document.getElementById('nav-links-menu');
+            hamburgerBtn.addEventListener('click', () => {
+                hamburgerBtn.classList.toggle('open');
+                navMenu.classList.toggle('active');
+            });
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburgerBtn.classList.remove('open');
+                    navMenu.classList.remove('active');
+                });
+            });
+
+            // Nav Bar Scroll Effect
+            const navbar = document.querySelector('.navbar');
+            window.addEventListener('scroll', () => {
+                navbar.classList.toggle('scrolled', window.scrollY > 50);
+            });
+
+            // Cursor Glow Effect
+            const cursorGlow = document.querySelector('.cursor-glow');
+            if (window.matchMedia("(min-width: 769px)").matches) {
+                window.addEventListener('mousemove', (e) => {
+                    cursorGlow.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+                });
+            }
+            
+            // Scroll Reveal Animation
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            revealElements.forEach(el => revealObserver.observe(el));
+            
+            // Hero Content Load Animation Trigger
+            const heroContent = document.querySelector('.hero-content');
+            if(heroContent) {
+                setTimeout(() => {
+                    heroContent.classList.add('loaded');
+                }, 100);
+            }
+
+            // Sparkle Effect
+            const nameElement = document.querySelector('.hero-content h1');
+            if (nameElement) {
+                if (window.matchMedia("(min-width: 769px)").matches) {
+                    let canCreateSparkle = true;
+                    nameElement.addEventListener('mousemove', (e) => {
+                        if (canCreateSparkle) {
+                            createSparkle(e.clientX, e.clientY);
+                            canCreateSparkle = false;
+                            setTimeout(() => { canCreateSparkle = true; }, 50);
+                        }
+                    });
+                } else {
+                    nameElement.addEventListener('click', (e) => {
+                        const rect = e.target.getBoundingClientRect();
+                        const x = rect.left + rect.width / 2;
+                        const y = rect.top + rect.height / 2;
+                        for(let i = 0; i < 20; i++) {
+                            createSparkle(x, y);
+                        }
+                    });
+                }
+            }
+            function createSparkle(x, y) {
+                const sparkle = document.createElement('span');
+                sparkle.classList.add('sparkle');
+                document.body.appendChild(sparkle);
+                const randomX = (Math.random() - 0.5) * 600;
+                const randomY = (Math.random() - 0.5) * 600;
+                sparkle.style.left = x + 'px';
+                sparkle.style.top = y + 'px';
+                sparkle.style.setProperty('--x', randomX + 'px');
+                sparkle.style.setProperty('--y', randomY + 'px');
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 1500);
+            }
+        });
+    </script>
+    
+</body>
+</html>
